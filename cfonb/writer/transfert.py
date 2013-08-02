@@ -64,7 +64,7 @@ class Transfert:
             etablissement, balance=''):
         montant        *= 100       #passe le montant en centime d'euros
         self.total     += montant   #ajout le momtant au total des virements
-        self._content   = self._add(reference, raisonsocial,domiciliation,
+        self._content  += self._add(reference, raisonsocial,domiciliation,
                                     guichet, compte, montant, libelle,
                                     etablissement, balance)
         return self
