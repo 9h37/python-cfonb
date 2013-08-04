@@ -8,11 +8,15 @@ from cfonb.parser import common
 # cfonb tests import
 from cfonb.tests import test_statement
 from cfonb.tests import test_transfert
+from cfonb.tests import test_debit
+
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTest(test_statement.suite())
     suite.addTest(test_transfert.suite())
+    suite.addTest(test_debit.suite())
+
     # doctests
     suite.addTest(doctest.DocTestSuite(common,
         optionflags=doctest.NORMALIZE_WHITESPACE|doctest.ELLIPSIS))
