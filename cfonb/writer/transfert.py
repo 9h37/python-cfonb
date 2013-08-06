@@ -189,7 +189,7 @@ class Transfert:
         content += self._space(montant, 16, rpad=True, fill="0")
         # [zone F]Libellé : 31 caractères à la disposition du client émetteur
         #        pour indication du motif et des références de l'opération
-        content += self._space("{}{}".format("*" if libelle else "", libelle), 31)
+        content += self._space("{}{}".format(" " if libelle else "", libelle), 31)
         # [zone G1]Code établissement destinataire 5 chiffres
         content += self._space(etablissement, 5)
         # [zone G2]Zone réservée de 6 caractères
