@@ -43,7 +43,7 @@ class Transfert:
     """
     _emetteur = {}   # dict des infos sur l'emetteur du fichier de virement
     _total    = 0    # total des virements en centime d'euros
-    _content = ""   # contenu du fichier de virement sans le header et le footer
+    _content  = ""   # contenu du fichier de virement sans le header et le footer
     _operation_type = "02"  # code opération par défaut pour un virement
 
     def setEmetteurInfos(self, num_emetteur, raisonsocial, reference,
@@ -54,34 +54,32 @@ class Transfert:
         self._emetteur['guichet']        = guichet
         self._emetteur['num_compte']     = num_compte
         self._emetteur['banque']         = banque
-        self._datevir                   = datevir.strftime(format='%d%m') + datevir.strftime(format='%y')[1:]
-        return self
+        self._datevir                    = datevir.strftime('%d%m') + datevir.strftime('%y')[1:]
 
     def add(self, reference, raisonsocial, domiciliation,
             guichet, compte, montant, libelle,
-            etablissement, balance=''):
+            etablissement, balance=""):
         montant        *= 100       # passe le montant en centime d'euros
-        self._total     += montant   # ajout le momtant au total des virements
+        self._total    += montant   # ajout le momtant au total des virements
         self._content  += self._add(reference, raisonsocial, domiciliation,
                                     guichet, compte, montant, libelle,
                                     etablissement, balance)
-        return self
 
     def render(self, filename=None):
         content  = self._header()
         content += self._content
         content += self._footer()
         if filename is not None:
-            f = open(filename, 'w')
+            f = open(filename, "w")
             f.write(content)
             f.close()
         return content
 
-    def _space(self, chaine, length, rpad=False, caract=''):
-        if rpad:
-            return u"{0:>{fill}{length}s}".format(str(chaine), length=length, fill=caract)[:length]
-        else:
-            return u"{0:<{fill}{length}s}".format(str(chaine), length=length, fill=caract)[:length]
+    def _space(self, chaine, length, rpad=False, fill=""):
+        return u"{0:{sign}{fill}{length}s}".format(str(chaine),
+                                                   sign=">" if rpad else "<",
+                                                   length=length,
+                                                   fill=fill)[:length]
 
     def _header(self):
         # [zone A]
@@ -149,7 +147,7 @@ class Transfert:
         content += self._space("", 11)
         # [zone E]Montant : les 16 positions contiennent le montant centimes
         #                  compris (00 s'il y a lieu) cadré à droite , non signé, complété à gauche par des zéros
-        content += self._space(self._total, 16, rpad=True, caract='0')
+        content += self._space(self._total, 16, rpad=True, fill="0")
         # [zone F]Réservée 31 caractères
         content += self._space("", 31)
         # [zone G1]Réservée 5 caractères
@@ -184,14 +182,14 @@ class Transfert:
         # [zone D3] Code Guichet 5 caractères
         content += self._space(guichet, 5)
         # [zone D4] Numéro de compte sur 11 caractères
-        content += self._space(compte, 5)
+        content += self._space(compte, 11)
         # [zone E]Montant : les 16 positions contiennent le montant centimes
         #        compris (00 s'il y a lieu) cadré à droite , non signé, complété à
         #        gauche par des zéros
-        content += self._space(montant, 16, rpad=True, caract='0')
+        content += self._space(montant, 16, rpad=True, fill="0")
         # [zone F]Libellé : 31 caractères à la disposition du client émetteur
         #        pour indication du motif et des références de l'opération
-        content += self._space(libelle, 31)
+        content += self._space("{}{}".format("*" if libelle else "", libelle), 31)
         # [zone G1]Code établissement destinataire 5 chiffres
         content += self._space(etablissement, 5)
         # [zone G2]Zone réservée de 6 caractères
