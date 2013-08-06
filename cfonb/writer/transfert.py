@@ -70,7 +70,7 @@ class Transfert:
         content += self._content
         content += self._footer()
         if filename is not None:
-            f = open(filename, "w")
+            f = open(filename, "wb")
             f.write(content)
             f.close()
         return content
